@@ -1,0 +1,51 @@
+;UPPERCASE TO LOWERCASE
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+MSG1     DB      'ENTER A UPPERCASE LETTER: $'
+MSG2     DB      'THE LOWERCASE OF IT IS : $' 
+MSG3     DB      'INVALID INPUT$'
+
+.CODE
+MAIN PROC
+    MOV AX,@DATA
+    MOV DS,AX
+    
+    MOV AH,9
+    LEA DX,MSG1
+    
+    MOV AH,1
+    INT 21H
+    MOV BL,AL 
+    
+    MOV AH,2
+    MOV DL,13
+    INT 21H
+    MOV DL,10
+    INT 21H
+    
+    
+    CMP BL,'A'
+    JL INVALID
+    CMP BL,'Z' 
+    JG INVALID
+    
+    MOV AH,2
+    MOV DL,BL
+    ADD DL,32
+    INT 21H
+    JMP EXIT
+    
+    
+    
+    INVALID:
+    MOV AH,9
+    LEA DX,MSG3 
+    INT 21H
+    
+    EXIT:
+    MOV AH,4CH
+    INT 21H
+    MAIN ENDP
+END MAIN

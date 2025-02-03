@@ -1,0 +1,57 @@
+;1'S COMPLEMENT TO 2'S COMPLEMENT NUMBER CONVERSION
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+
+NUM         DB      101B
+MSG1        DB      10,13,'1S COMPLEMENT IS : $'
+MSG2        DB      10,13,'2S COMPLEMENT IS : $'
+
+.CODE
+MAIN PROC
+    MOV AX,@DATA
+    MOV DS,AX
+    
+    ONE:
+    MOV AH,9
+    LEA DX,MSG1
+    INT 21H
+    
+    MOV BL,NUM
+    NOT BL
+    CALL PRINT 
+    
+    TWO:
+    MOV AH,9
+    LEA DX,MSG2
+    INT 21H
+    
+    MOV BL,NUM
+    NOT BL
+    ADD BL,1
+    CALL PRINT
+    JMP EXIT
+    
+    PRINT PROC
+    MOV CX,8
+    BINARY:
+    SHL BL,1
+    JNC ZERO
+    MOV DL,'1'
+    JMP DISPLAY
+    
+    ZERO:
+    MOV DL,'0'
+    
+    DISPLAY:
+    MOV AH,2
+    INT 21H
+    
+    LOOP BINARY
+    RET
+    
+    EXIT:
+    MOV AH,4CH
+    INT 21H
+END 
