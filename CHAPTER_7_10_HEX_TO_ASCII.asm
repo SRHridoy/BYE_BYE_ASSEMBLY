@@ -1,0 +1,67 @@
+.MODEL SMALL
+.STACK 100H
+.DATA
+    
+    MSG1 DB 10, 13, 'TYPE A CHARACTER: $'
+    MSG2 DB 10, 13, 'THE ASCII CODE OF $'
+    MSG3 DB ' IN HEX IS : $'
+    
+.CODE
+MAIN PROC
+    MOV AX,@DATA
+    MOV DS,AX
+     
+    START:
+    MOV AH,9
+    LEA DX,MSG1
+    INT 21H
+    
+    MOV AH,1
+    INT 21H
+    CMP AL,13
+    JE EXIT
+    MOV BL,AL
+    
+    MOV AH,9
+    LEA DX,MSG2
+    INT 21H
+    
+    MOV AH,2
+    MOV DL,BL
+    INT 21H
+    
+    MOV AH,9
+    LEA DX,MSG3
+    INT 21H
+    
+    ;UPPER NIBBLE
+    MOV DL,BL
+    SHR DL,4
+    CALL CONVERT
+    
+    ;LOWER NIBBLE
+    MOV DL,BL
+    AND DL,0FH
+    CALL CONVERT
+    
+    JMP START
+    
+CONVERT PROC
+    CMP DL,9
+    JBE DIGIT
+    
+    ADD DL,55   ;TO DISPLAY A-F
+    JMP DISPLAY
+
+DIGIT:
+    ADD DL,'0'  ;TO DISPLAY 0-9
+
+DISPLAY:
+    MOV AH,2
+    INT 21H
+    RET
+    
+    EXIT:
+    MOV AH,4CH
+    INT 21H
+END
